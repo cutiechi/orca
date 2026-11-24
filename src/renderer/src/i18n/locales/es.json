@@ -24377,7 +24377,10 @@
       "botsOff": "Los bots están desactivados en Ajustes, así que Orca omitió esta ejecución.",
       "botMissing": "El bot con el que se ejecuta esta automatización ya no existe.",
       "botFolderMissing": "La carpeta del bot ya no está disponible.",
-      "botPaused": "{{bot}} está en pausa, así que Orca omitió esta ejecución."
+      "botPaused": "{{bot}} está en pausa, así que Orca omitió esta ejecución.",
+      "agentModelUnavailable": "{{agent}} no pudo usar {{model}}.",
+      "theAgent": "El agente",
+      "selectedModel": "el modelo seleccionado"
     },
     "extraAgentArgs": {
       "errors": {
@@ -24407,6 +24410,24 @@
     },
     "botTarget": {
       "hostNeedsUpdate": "Actualiza el servidor de Orca en {host} para que sus bots puedan tener automatizaciones."
+    },
+    "runModelFix": {
+      "model": "Modelo",
+      "changed": "Esta automatización cambió, así que no se guardó el modelo. Usa Editar para cambiarlo.",
+      "rerunFailed": "Modelo establecido en {{model}} para esta automatización, pero la nueva ejecución no se inició.",
+      "saved": "Modelo establecido en {{model}} para esta automatización.",
+      "queuedWithNewerModel": "La ejecución se puso en cola con el modelo más reciente de la automatización.",
+      "modelUnavailable": "Modelo no disponible.",
+      "errorWithPicker": "{{agent}} no pudo usar este modelo.",
+      "failed": "Fallido",
+      "busy": "Ya hay un cambio de modelo en curso.",
+      "rerunUnconfirmed": "El modelo se cambió a {{model}}. Consulta el historial para ver si se inició la nueva ejecución.",
+      "unconfirmed": "No se pudo confirmar el cambio de modelo. Revisa la automatización antes de volver a ejecutarla."
+    },
+    "runPage": {
+      "edit": "Editar",
+      "editAutomation": "Editar automatización",
+      "running": "En ejecución"
     }
   },
   "codeHost": {

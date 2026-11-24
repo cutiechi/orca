@@ -23899,7 +23899,10 @@
       "botsOff": "Bots sind in den Einstellungen ausgeschaltet, daher hat Orca diesen Lauf übersprungen.",
       "botMissing": "Der Bot, als der diese Automatisierung läuft, existiert nicht mehr.",
       "botFolderMissing": "Der Ordner des Bots ist nicht mehr verfügbar.",
-      "botPaused": "{{bot}} ist pausiert, daher hat Orca diesen Lauf übersprungen."
+      "botPaused": "{{bot}} ist pausiert, daher hat Orca diesen Lauf übersprungen.",
+      "agentModelUnavailable": "{{agent}} konnte {{model}} nicht verwenden.",
+      "theAgent": "Der Agent",
+      "selectedModel": "das ausgewählte Modell"
     },
     "extraAgentArgs": {
       "errors": {
@@ -23929,6 +23932,24 @@
     },
     "botTarget": {
       "hostNeedsUpdate": "Aktualisiere den Orca-Server auf {host}, damit seine Bots Automatisierungen nutzen können."
+    },
+    "runModelFix": {
+      "model": "Modell",
+      "changed": "Diese Automatisierung wurde geändert, daher wurde das Modell nicht gespeichert. Ändere es über Bearbeiten.",
+      "rerunFailed": "Modell für diese Automatisierung auf {{model}} gesetzt, aber die erneute Ausführung wurde nicht gestartet.",
+      "saved": "Modell für diese Automatisierung auf {{model}} gesetzt.",
+      "queuedWithNewerModel": "Der Lauf wurde mit dem aktuellen Modell der Automatisierung in die Warteschlange gestellt.",
+      "modelUnavailable": "Modell nicht verfügbar.",
+      "errorWithPicker": "{{agent}} konnte dieses Modell nicht verwenden.",
+      "failed": "Fehlgeschlagen",
+      "busy": "Das Modell wird bereits geändert.",
+      "rerunUnconfirmed": "Modell auf {{model}} gesetzt. Prüfe im Ausführungsverlauf, ob der neue Lauf gestartet wurde.",
+      "unconfirmed": "Die Modelländerung konnte nicht bestätigt werden. Prüfe die Automation, bevor du sie erneut ausführst."
+    },
+    "runPage": {
+      "edit": "Bearbeiten",
+      "editAutomation": "Automatisierung bearbeiten",
+      "running": "Läuft"
     }
   },
   "codeHost": {
