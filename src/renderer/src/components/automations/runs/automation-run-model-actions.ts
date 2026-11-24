@@ -76,6 +76,9 @@ export function useAutomationRunModelActions(
     confirmation: AutomationRunModelConfirmation
   } | null>(null)
   const modelConfirmation = saved?.runKey === activeRun ? saved.confirmation : null
+  if (saved && saved.runKey !== activeRun) {
+    setSaved(null)
+  }
   useLayoutEffect(() => {
     currentRunVisit.current = activeRun ? { confirmed: false } : null
     return () => {
