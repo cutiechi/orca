@@ -23599,14 +23599,14 @@
     "runModelFix": {
       "model": "模型",
       "changed": "此自動化已變更，因此未儲存模型。請使用編輯進行變更。",
-      "rerunFailed": "已將此自動化的模型設為 {{model}}，但重新執行未能開始。",
+      "rerunFailed": "模型已儲存。重新執行未開始。",
       "saved": "已將此自動化的模型設為 {{model}}。",
       "queuedWithNewerModel": "已使用此自動化最新儲存的模型將執行加入佇列。",
       "modelUnavailable": "模型無法使用。",
       "errorWithPicker": "{{agent}} 無法使用此模型。",
       "failed": "失敗",
       "busy": "正在更換模型。",
-      "rerunUnconfirmed": "模型已設為 {{model}}。請查看執行紀錄，確認是否已開始重新執行。",
+      "rerunUnconfirmed": "模型已儲存。無法確認是否已重新執行。",
       "unconfirmed": "無法確認模型是否已更換。請先檢查自動化，再重新執行。"
     },
     "runPage": {

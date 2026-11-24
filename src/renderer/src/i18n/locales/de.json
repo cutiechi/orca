@@ -23936,14 +23936,14 @@
     "runModelFix": {
       "model": "Modell",
       "changed": "Diese Automatisierung wurde geändert, daher wurde das Modell nicht gespeichert. Ändere es über Bearbeiten.",
-      "rerunFailed": "Modell für diese Automatisierung auf {{model}} gesetzt, aber die erneute Ausführung wurde nicht gestartet.",
+      "rerunFailed": "Modell gespeichert. Der erneute Lauf wurde nicht gestartet.",
       "saved": "Modell für diese Automatisierung auf {{model}} gesetzt.",
       "queuedWithNewerModel": "Der Lauf wurde mit dem aktuellen Modell der Automatisierung in die Warteschlange gestellt.",
       "modelUnavailable": "Modell nicht verfügbar.",
       "errorWithPicker": "{{agent}} konnte dieses Modell nicht verwenden.",
       "failed": "Fehlgeschlagen",
       "busy": "Das Modell wird bereits geändert.",
-      "rerunUnconfirmed": "Modell auf {{model}} gesetzt. Prüfe im Ausführungsverlauf, ob der neue Lauf gestartet wurde.",
+      "rerunUnconfirmed": "Modell gespeichert. Der erneute Lauf konnte nicht bestätigt werden.",
       "unconfirmed": "Die Modelländerung konnte nicht bestätigt werden. Prüfe die Automation, bevor du sie erneut ausführst."
     },
     "runPage": {

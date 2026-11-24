@@ -151,30 +151,33 @@ export function useAutomationRunModelActions(
     if (outcome.status === 'uncaptured') {
       return
     }
+    const stillOnRun =
+      currentRunVisit.current === runVisit && useAppStore.getState().activeView === 'automations'
     const result = toDispatchResult(outcome)
     if (!result.ok) {
       if (result.notice.severity === 'owner') {
-        destination.reportOwnerAction(selectedRow.key, result.notice)
+        if (stillOnRun) {
+          destination.reportOwnerAction(selectedRow.key, result.notice)
+        }
       } else {
         destination.invalidateRowHost(selectedRow.key, 'definition')
-        showAutomationModelRecoveryResult({ status: 'unconfirmed' }, model.label)
+        showAutomationModelRecoveryResult({ status: 'unconfirmed' })
       }
       return
     }
 
-    destination.reportOwnerAction(selectedRow.key, null)
+    if (stillOnRun) {
+      destination.reportOwnerAction(selectedRow.key, null)
+    }
     if (result.value.status !== 'unsupported' && result.value.status !== 'busy') {
       destination.invalidateRowHost(selectedRow.key, 'definition')
     }
     if (result.value.status !== 'queued') {
-      showAutomationModelRecoveryResult(result.value, model.label, hostLabel)
+      showAutomationModelRecoveryResult(result.value, hostLabel)
       return
     }
     local.setRunHistoryReloadToken((token) => token + 1)
-    if (
-      currentRunVisit.current === runVisit &&
-      useAppStore.getState().activeView === 'automations'
-    ) {
+    if (stillOnRun) {
       runVisit.confirmed = true
       setSaved({
         runKey: activeRun,

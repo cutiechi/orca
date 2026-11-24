@@ -27160,7 +27160,7 @@
       "model": "Model",
       "defaultModel": "Default model",
       "changed": "This automation changed, so the model wasn't saved. Use Edit to change it.",
-      "rerunFailed": "Model set to {{model}} for this automation, but the rerun didn’t start.",
+      "rerunFailed": "Model saved. Rerun didn't start.",
       "saved": "Model set to {{model}} for this automation.",
       "queuedWithNewerModel": "Run queued with the automation's latest model.",
       "modelUnavailable": "Model unavailable.",
@@ -27168,7 +27168,7 @@
       "errorWithPicker": "{{agent}} couldn't use this model.",
       "failed": "Failed",
       "busy": "A model change is already in progress.",
-      "rerunUnconfirmed": "Model set to {{model}}. Check the run history to see if the rerun started.",
+      "rerunUnconfirmed": "Model saved. Couldn't confirm the rerun.",
       "unconfirmed": "Couldn't confirm the model change. Check the automation before rerunning.",
       "unsupported": "Update Orca on {{host}} to switch models.",
       "thisComputer": "this computer"

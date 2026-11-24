@@ -24946,14 +24946,14 @@
     "runModelFix": {
       "model": "Modelo",
       "changed": "Esta automação mudou, então o modelo não foi salvo. Use Editar para alterá-lo.",
-      "rerunFailed": "Modelo definido como {{model}} para esta automação, mas a nova execução não começou.",
+      "rerunFailed": "Modelo salvo. A nova execução não começou.",
       "saved": "Modelo definido como {{model}} para esta automação.",
       "queuedWithNewerModel": "A execução foi colocada na fila com o modelo mais recente da automação.",
       "modelUnavailable": "Modelo indisponível.",
       "errorWithPicker": "{{agent}} não conseguiu usar este modelo.",
       "failed": "Falhou",
       "busy": "Já há uma alteração de modelo em andamento.",
-      "rerunUnconfirmed": "Modelo definido como {{model}}. Consulte o histórico para ver se a nova execução começou.",
+      "rerunUnconfirmed": "Modelo salvo. Não foi possível confirmar a nova execução.",
       "unconfirmed": "Não foi possível confirmar a alteração do modelo. Verifique a automação antes de executá-la novamente."
     },
     "runPage": {

@@ -78,7 +78,6 @@ export function automationRunModelFix({
 
 export function showAutomationModelRecoveryResult(
   result: Exclude<AutomationModelRecoveryResult, { status: 'queued' }>,
-  model: string,
   hostLabel?: string
 ): void {
   switch (result.status) {
@@ -117,15 +116,10 @@ export function showAutomationModelRecoveryResult(
     case 'saved':
       toast.error(
         result.rerun === 'skipped'
-          ? translate(
-              'automations.runModelFix.rerunFailed',
-              'Model set to {{model}} for this automation, but the rerun didn’t start.',
-              { model }
-            )
+          ? translate('automations.runModelFix.rerunFailed', "Model saved. Rerun didn't start.")
           : translate(
               'automations.runModelFix.rerunUnconfirmed',
-              'Model set to {{model}}. Check the run history to see if the rerun started.',
-              { model }
+              "Model saved. Couldn't confirm the rerun."
             )
       )
       break

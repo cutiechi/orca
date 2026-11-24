@@ -91,6 +91,9 @@ export async function recoverAutomationModel(
       )
 
     controller.assertOwner(id, expectedOwner, 'mutate')
+    if (!model || !isReadableAutomationRecoveryModel(model)) {
+      return { status: 'changed' }
+    }
     const target = controller.show(id).bot
     const failed = controller.listRuns(id).find((run) => run.id === runId)
     if (
@@ -167,7 +170,8 @@ export async function recoverAutomationModel(
         runTarget.bot
       )
       if (
-        !isReadableAutomationRecoveryModel(currentModel ?? null) ||
+        !currentModel ||
+        !isReadableAutomationRecoveryModel(currentModel) ||
         Object.keys(savedOptions).length !== Object.keys(currentOptions).length ||
         Object.entries(savedOptions).some(([key, value]) => currentOptions[key] !== value)
       ) {

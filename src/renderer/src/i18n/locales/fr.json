@@ -24435,14 +24435,14 @@
     "runModelFix": {
       "model": "Modèle",
       "changed": "Cette automatisation a changé, le modèle n’a donc pas été enregistré. Utilisez Modifier pour le changer.",
-      "rerunFailed": "Modèle défini sur {{model}} pour cette automatisation, mais la relance n’a pas démarré.",
+      "rerunFailed": "Modèle enregistré. La relance n’a pas démarré.",
       "saved": "Modèle défini sur {{model}} pour cette automatisation.",
       "queuedWithNewerModel": "L’exécution a été mise en file d’attente avec le dernier modèle de l’automatisation.",
       "modelUnavailable": "Modèle indisponible.",
       "errorWithPicker": "{{agent}} n’a pas pu utiliser ce modèle.",
       "failed": "Échec",
       "busy": "Un changement de modèle est déjà en cours.",
-      "rerunUnconfirmed": "Le modèle a été remplacé par {{model}}. Consultez l’historique pour vérifier si la nouvelle exécution a démarré.",
+      "rerunUnconfirmed": "Modèle enregistré. Impossible de confirmer la relance.",
       "unconfirmed": "Impossible de confirmer le changement de modèle. Vérifiez l’automatisation avant de la relancer."
     },
     "runPage": {

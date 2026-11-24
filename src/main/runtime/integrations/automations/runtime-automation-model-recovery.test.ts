@@ -39,7 +39,7 @@ type RecoveryOptions = {
   target?: Partial<AutomationBotTarget>
   destinationBeforeHandler?: AutomationBotTarget['resultsTo']
   folderMoveBeforeHandler?: string
-  settingsModel?: string
+  settingsModel?: string | null
   settingsOptions?: Record<string, string>
   input?: Partial<AutomationModelRecoveryInput>
   refuseRerun?: boolean
@@ -116,7 +116,7 @@ function beginRecovery(options: RecoveryOptions = {}) {
   const pending = new Set<string>()
   const bot = makeTestBot({
     ...(options.inheritPermission ? { permissionMode: undefined } : {}),
-    ...(options.settingsModel
+    ...(options.settingsModel !== undefined
       ? {}
       : { launch: { model: 'old-model', options: { effort: 'high' } } })
   })
@@ -128,11 +128,11 @@ function beginRecovery(options: RecoveryOptions = {}) {
   state.settings = {
     ...state.settings,
     botsEnabled: true,
-    ...(options.settingsModel
+    ...(options.settingsModel !== undefined
       ? {
           agentLaunchChoices: normalizeAgentLaunchChoices({
             codex: {
-              model: options.settingsModel,
+              model: options.settingsModel ?? undefined,
               options: options.settingsOptions
             }
           })
@@ -279,6 +279,16 @@ it('shows the owner Settings model, refuses the same choice and queues a differe
   different.acceptSave()
   await expect(different.recovery).resolves.toEqual({ status: 'queued', runId: 'queued' })
   expect(different.readSelection()).toMatchObject({ model: 'replacement', permission: 'ask' })
+})
+
+it('rejects a blank recovery choice even with an inherited model', async () => {
+  const pending = beginRecovery({ settingsModel: 'settings-model', input: { model: '  \t' } })
+  expect(pending.readSelection()?.model).toBe('settings-model')
+  pending.acceptSave()
+
+  await expect(pending.recovery).resolves.toEqual({ status: 'changed' })
+  expect(pending.target?.agentSetup).toBeUndefined()
+  expect(pending.queued()).toHaveLength(0)
 })
 
 it('withholds a corrupt persisted Settings model from recovery reads and direct recovery', async () => {
@@ -453,6 +463,42 @@ it('admits a newer inherited model when its effective non-model settings are equ
   })
   expect(pending.target).toEqual(inheritedTarget)
   expect(pending.queued().map((run) => run.id)).toEqual(['queued'])
+})
+
+it('preserves an inheritance reset without an effective model and skips automatic queueing', async () => {
+  const target = { botId: 'bot-1', runsIn: 'new', resultsTo: 'none' } as const
+  const pending = beginRecovery({ settingsModel: null })
+  expect(pending.target?.agentSetup?.launch).toEqual({ model: 'replacement' })
+  pending.editWithOwnerWriter(target)
+  expect(pending.readSelection()).toMatchObject({ model: null, permission: 'ask' })
+  expect(pending.backgroundSettings()).toEqual({})
+  pending.acceptSave()
+
+  await expect(pending.recovery).resolves.toEqual({ status: 'saved', rerun: 'skipped' })
+  expect(pending.target).toEqual(target)
+  expect(pending.queued()).toHaveLength(0)
+
+  const initialDefault = beginRecovery({ settingsModel: null })
+  initialDefault.acceptSave()
+  await expect(initialDefault.recovery).resolves.toEqual({ status: 'queued', runId: 'queued' })
+  expect(initialDefault.readSelection()?.model).toBe('replacement')
+})
+
+it('retains a superseding model through a skipped queue or a lost queue acknowledgement', async () => {
+  const target = { botId: 'bot-1', runsIn: 'new', resultsTo: 'none' } as const
+  const skipped = beginRecovery({ settingsModel: 'model-c', settingsOptions: { effort: 'high' } })
+  skipped.editWithOwnerWriter(target)
+  skipped.acceptSave()
+  await expect(skipped.recovery).resolves.toEqual({ status: 'saved', rerun: 'skipped' })
+  expect(skipped.readSelection()?.model).toBe('model-c')
+  expect(skipped.queued()).toHaveLength(0)
+
+  const uncertain = beginRecovery({ settingsModel: 'model-c', refuseRerun: true })
+  uncertain.editWithOwnerWriter(target)
+  uncertain.acceptSave()
+  await expect(uncertain.recovery).resolves.toEqual({ status: 'saved', rerun: 'unconfirmed' })
+  expect(uncertain.readSelection()?.model).toBe('model-c')
+  expect(uncertain.queued().map((run) => run.id)).toEqual(['queued'])
 })
 
 it('skips automatic rerun when a newer owner save changes effective non-model settings', async () => {

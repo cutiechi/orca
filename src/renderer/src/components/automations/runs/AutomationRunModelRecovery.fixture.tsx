@@ -206,7 +206,7 @@ function RunRecovery({
         }}
         onPickModel={async (option) => {
           if (olderHost) {
-            showAutomationModelRecoveryResult({ status: 'unsupported' }, option.label, hostLabel)
+            showAutomationModelRecoveryResult({ status: 'unsupported' }, hostLabel)
             return
           }
           if (remote) {
