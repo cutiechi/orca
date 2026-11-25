@@ -15,7 +15,7 @@ import {
   type BotRequestAsker
 } from '../../shared/bots/bot-acts-for'
 import { originOf, requestsOriginPlace } from './bot-request-origin-place'
-import { typedInOrcaByOwner } from './bot-typed-in-orca'
+import { typedInOrcaByOwner, typedOnAnotherDevice } from './bot-typed-in-orca'
 import { isRootTurnRecord, isRootUserMessage, turnMessages } from './bot-turn-messages'
 
 /** The conversation a request came in, as Orca Cloud names it. */
@@ -53,6 +53,9 @@ export type BotActingTurn = {
   /** The owner typed every message this turn took at the host's own window: it acts for the owner,
    *  whomever its conversation acts for. */
   typedByOwner?: true
+  /** A paired device Orca can't place as the owner typed a message this turn took: it never acts
+   *  for the owner, though its conversation does (Home Chat, a chat the owner started). */
+  typedByAnother?: true
   /** Who did the event behind the automation prompt that opened the turn, for the record only. */
   triggeredBy?: AutomationTriggeredBy
   /** The event this turn acts on, as the host recorded it: its automation prompt's, or the one the
@@ -258,6 +261,7 @@ export function readBotActingTurnWithin(
   // A turn only worker mail woke reads an older turn's askers, never its place: its work is no thread's.
   for (const [index, window] of turnWindows(items, submissions, newestTurns).entries()) {
     const readings = window.map((item) => ({ item, reading: readItem(item.body, lookups) }))
+    const typedByAnother = window.some(typedOnAnotherDevice)
     const requestIds = readings.flatMap((entry) =>
       entry.reading.kind === 'request' ? entry.reading.messageIds : []
     )
@@ -290,6 +294,7 @@ export function readBotActingTurnWithin(
         actingOnRequestId: requestIds[0] ?? null,
         requestIds,
         wokenAt: null,
+        ...(typedByAnother ? { typedByAnother: true as const } : {}),
         ...(origin ? { origin } : {}),
         ...(originPlace ? { originPlace } : {})
       }
@@ -343,6 +348,7 @@ export function readBotActingTurnWithin(
           ? originOf(openers.map((entry) => entry.reading.wokenAt ?? undefined))
           : {}),
         ...(typedByOwner ? { typedByOwner: true as const } : {}),
+        ...(typedByAnother ? { typedByAnother: true as const } : {}),
         ...(opener.reading.kind === 'conversation' && opener.reading.triggeredBy
           ? { triggeredBy: opener.reading.triggeredBy }
           : {}),
@@ -366,7 +372,10 @@ export function readBotActingTurnWithin(
 }
 
 /** Whether the turn acts for the owner: the owner typed it at the host's window, or everyone it acts
- *  for is the owner. Every Slack action's turnFor and the "asked by" line on owner writes read this. */
-export function turnActsForOwner(turn: Pick<BotActingTurn, 'askers' | 'typedByOwner'>): boolean {
-  return turn.typedByOwner === true || actsForOwner(turn.askers)
+ *  for is the owner and no paired device Orca can't place as the owner typed in it. Every Slack
+ *  action's turnFor and the "asked by" line on owner writes read this. */
+export function turnActsForOwner(
+  turn: Pick<BotActingTurn, 'askers' | 'typedByOwner' | 'typedByAnother'>
+): boolean {
+  return turn.typedByAnother !== true && (turn.typedByOwner === true || actsForOwner(turn.askers))
 }
