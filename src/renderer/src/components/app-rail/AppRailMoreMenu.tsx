@@ -1,36 +1,21 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
-import { CircleHelp, Ellipsis, Settings } from 'lucide-react'
+import { Ellipsis } from 'lucide-react'
 import { useTranslate } from '@/i18n/use-translate'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import type { HelpMenuController } from '@/components/sidebar/chrome/help-menu-controller'
 import { APP_RAIL_ICON_SIZE, APP_RAIL_ICON_STROKE_WIDTH, AppRailButton } from './AppRailButton'
 import { appRailSlotCapacity } from './app-rail-overflow'
 
-/** What doesn't fit on a very short rail: Help (as a submenu sharing the rail's one Help controller), then Settings. */
+/** The destinations that don't fit on a short rail; the account button never folds in here. */
 export function AppRailMoreMenu({
-  help,
-  includeHelp,
-  includeSettings,
-  settingsActive,
-  onOpenSettings,
   tabStop,
   destinations
 }: {
-  help: HelpMenuController
-  includeHelp: boolean
-  includeSettings: boolean
-  settingsActive: boolean
-  onOpenSettings: () => void
   tabStop: boolean
   /** Folded destinations, in rail order: plain rows that open their page. */
   destinations: readonly {
@@ -48,13 +33,9 @@ export function AppRailMoreMenu({
   // load) the page's own focus; yielding makes the page's focus win every time.
   const yieldCloseFocusRef = useRef(false)
   const label = t('appRail.more', 'More')
-  const settingsLabel = t('auto.components.sidebar.SidebarSettingsHelpMenu.a428c25998', 'Settings')
-  const current =
-    destinations.find((destination) => destination.current)?.label ??
-    (includeSettings && settingsActive ? settingsLabel : undefined)
+  const current = destinations.find((destination) => destination.current)?.label
   return (
-    // Only a More that holds Help warms Help's feedback dialog.
-    <DropdownMenu modal={false} onOpenChange={includeHelp ? help.handleMenuOpenChange : undefined}>
+    <DropdownMenu modal={false}>
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
@@ -102,30 +83,6 @@ export function AppRailMoreMenu({
             {destination.label}
           </DropdownMenuItem>
         ))}
-        {destinations.length > 0 && (includeHelp || includeSettings) ? (
-          <DropdownMenuSeparator />
-        ) : null}
-        {includeHelp ? (
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <CircleHelp className="size-3.5" aria-hidden />
-              {t('auto.components.sidebar.SidebarSettingsHelpMenu.2991a0106c', 'Help')}
-            </DropdownMenuSubTrigger>
-            {/* Help folds in only when the window is short, so its rows must scroll within the window. */}
-            <DropdownMenuSubContent scrollable className="w-52">
-              {help.items}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-        ) : null}
-        {includeSettings ? (
-          <DropdownMenuItem
-            onSelect={onOpenSettings}
-            aria-current={settingsActive ? 'page' : undefined}
-          >
-            <Settings className="size-3.5" aria-hidden />
-            {settingsLabel}
-          </DropdownMenuItem>
-        ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
   )

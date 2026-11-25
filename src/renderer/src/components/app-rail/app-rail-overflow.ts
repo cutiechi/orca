@@ -10,33 +10,20 @@ export type AppRailPartition = {
   /** Destinations kept on the rail, from the top; the rest go into More in order. */
   shownDestinations: number
   more: boolean
-  helpInMore: boolean
-  settingsInMore: boolean
 }
 
 /**
- * Fit Workspaces, the destinations, Help and Settings into `capacity` slots. When they don't all fit, More takes a
- * slot and things fold into it from the bottom of the top group up: destinations first, then Help, then Settings.
- * Workspaces and More always stay (the floor); the rail never scrolls.
+ * Fit Workspaces, the destinations and the account button into `capacity` slots. When they don't all fit, More takes
+ * a slot and destinations fold into it from the bottom of the top group up. Workspaces, More and the account button
+ * stay (the floor); the account button never folds, and the rail never scrolls.
  */
 export function partitionAppRail(destinationCount: number, capacity: number): AppRailPartition {
-  if (1 + destinationCount + 2 <= capacity) {
-    return {
-      shownDestinations: destinationCount,
-      more: false,
-      helpInMore: false,
-      settingsInMore: false
-    }
+  // With nothing to fold, an empty More would only cost a slot.
+  if (destinationCount === 0 || 1 + destinationCount + 1 <= capacity) {
+    return { shownDestinations: destinationCount, more: false }
   }
-  let remaining = Math.max(0, capacity - 2)
-  const settingsInMore = remaining < 1
-  remaining = Math.max(0, remaining - 1)
-  const helpInMore = remaining < 1
-  remaining = Math.max(0, remaining - 1)
   return {
-    shownDestinations: Math.min(destinationCount, remaining),
-    more: true,
-    helpInMore,
-    settingsInMore
+    shownDestinations: Math.min(destinationCount, Math.max(0, capacity - 3)),
+    more: true
   }
 }

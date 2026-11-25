@@ -31042,7 +31042,9 @@
     "toolsLabel": "App tools",
     "workspaces": "Workspaces",
     "more": "More",
-    "pageRegion": "Page"
+    "pageRegion": "Page",
+    "account": "Account",
+    "signIn": "Sign in"
   },
   "chats": {
     "delete": {
