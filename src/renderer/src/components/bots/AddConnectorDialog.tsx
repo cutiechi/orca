@@ -9,6 +9,7 @@ import { useAppStore } from '@/store'
 import { openBotConnectorsTab } from './bot-settings-open'
 import type { BotConnector } from './bot-connectors'
 import { BotAppsCatalog, type BotAppsStep } from './apps/BotAppsCatalog'
+import { APPS_CATALOG_DIALOG_CLASS } from './apps/AppsCatalogFrame'
 import type { Bot } from '../../../../shared/bot-types'
 import { GoogleAccountsStep, useGoogleSignedInFor } from './google/GoogleAccountsChoice'
 
@@ -90,7 +91,7 @@ export function AddConnectorDialog({
         showCloseButton={false}
         aria-describedby={undefined}
         data-step={step !== null || googleStep}
-        className="flex h-175 max-h-[calc(100vh-4rem)] flex-col overflow-hidden sm:max-w-[min(57.5rem,calc(100vw-4rem))] data-[step=true]:h-auto data-[step=true]:sm:max-w-115"
+        className={APPS_CATALOG_DIALOG_CLASS}
       >
         {step !== null || googleStep ? (
           <DialogTitle className="sr-only">{title}</DialogTitle>
