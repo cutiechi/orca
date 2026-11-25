@@ -14,6 +14,7 @@ import { connectorFailure } from './external-conversation-failure'
 import type { ConversationReplyFill } from './external-conversation-reply-fill'
 import type { ReplyRecoveryChat } from './external-conversation-reply-recovery'
 import { turnVerdictOf } from './external-conversation-reply-evidence'
+import { claimCarried } from './external-conversation-whole-answer'
 import { readEndedChatTurnOpener } from './external-conversation-turn-opener'
 
 /** Fills the rows a turn with a verdict answered; returns those one without a verdict claims
@@ -58,6 +59,9 @@ export async function fillRecoveredTurn(
       ...(record?.completedAt ? { postsUntil: record.completedAt } : {}),
       ...turnReplyOf(snapshot.items, turn.itemId, deps.isBot(sessionId)),
       links: [],
+      // Recovery fills it after the fact: judged by when the turn ended (REPLY_FRESH_MS).
+      recovered: { endedAt: readAgentJournalTurn(turn.body)?.completedAt ?? turn.observedAt },
+      ...claimCarried(opener),
       ...(outcome === 'failure'
         ? {
             failure: connectorFailure(

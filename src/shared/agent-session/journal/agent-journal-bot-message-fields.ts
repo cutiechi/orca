@@ -22,6 +22,10 @@ export type AgentJournalConnectorClaim = {
   /** Which cut it is: a restart's, or a usage limit's. */
   cutKind: 'restart' | 'usage_limit'
   origin: AgentJournalConnectorDelivery[]
+  /** A restart chain's replies each cut left partway, oldest first: the continuation's answer
+   *  follows them, so its requests get the whole reply. Written when the claim is, from the read
+   *  that builds it; a fill reads nothing more. */
+  carried?: string[]
 }
 
 /** What Orca writes on a message it delivers to a bot. */

@@ -157,6 +157,8 @@ export function start(
     bot?: boolean
     /** An empty turn's retry: whether the chat tried a post itself, and how its ask's send goes. */
     retry?: { posted?: boolean; send: EmptyRetrySend }
+    /** When this process started: a request admitted earlier crossed a restart. */
+    processStartedAt?: number
   } = {}
 ) {
   const { bot = false, retry: retrying, ...recoveryOptions } = options
@@ -192,7 +194,8 @@ export function start(
     () => {},
     usageLimitReplyPause(() => journal, options.usageLimitDisposition ?? (async () => 'ended')),
     undefined,
-    retry
+    retry,
+    { processStartedAt: options.processStartedAt }
   )
   const recovery: ConnectorReplyRecovery = new ConnectorReplyRecovery({
     ...(retry ? { retrySending: retry.sending } : {}),
@@ -225,7 +228,7 @@ export function start(
               itemId: `said-${key}`,
               revision: 1,
               sequence: at,
-              observedAt: at,
+              observedAt: NOW + at,
               body: {
                 kind: 'message' as const,
                 role: 'assistant' as const,
@@ -239,7 +242,7 @@ export function start(
         itemId: key,
         revision: 1,
         sequence: at + 1,
-        observedAt: at + 1,
+        observedAt: NOW + at + 1,
         body: {
           kind: 'turn',
           turnId: `provider-${key}`,

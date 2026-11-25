@@ -21,10 +21,9 @@ import {
 } from '../../shared/agent-session/lifecycle/records/agent-session-turn-record'
 import type { ConnectorFailure } from '../../shared/connectors/connector-cloud-contract'
 import type { ReplyRecoveryChat } from './external-conversation-reply-recovery'
-import { connectorReplyTurnOutcome } from '../../shared/agent-session/journal/journal-connector-reply-turn'
 import { structuredAgentSessionTurnReply } from '../../shared/agent-session/requests/structured-agent-session-turn-reply'
-import { JOURNAL_CONNECTOR_REPLY_PROSE_BYTES } from '../../shared/agent-session/journal/journal-connector-reply'
-import { capAnswer } from '../connector-cloud/connector-snapshot'
+import { carriedOf } from './external-conversation-whole-answer'
+import { heldAnswer } from './external-conversation-reply-held'
 import { DISPATCH_DOUBT_PROVIDER_EXITED } from '../native-chat/agent-session-journal/projection/journal-dispatch-doubt-reasons'
 
 // What the journal proves about reply outbox rows (Phase 1): which cut a row is in, what its claim's
@@ -36,6 +35,8 @@ export type ReplyRecoveryVerdict = {
   outcome: JournalConnectorReplyOutcome
   failure?: ConnectorFailure
   prose?: string
+  /** When the turn that wrote `prose` ended: a held answer is judged by it (REPLY_FRESH_MS). */
+  endedAt?: number
 }
 
 // The machine lost track of the request across a restart: it may have finished (Phase 1 §1.8).
@@ -236,7 +237,13 @@ export async function claimCut(
             conversation: row.conversation,
             deliveryId: row.deliveryId
           }))
-  return { cutTurnId: cut.turnId, cutKind: cut.kind, origin }
+  // A restart's continuation carries the replies its chain's cuts left partway (item 964).
+  return {
+    cutTurnId: cut.turnId,
+    cutKind: cut.kind,
+    origin,
+    ...carriedOf(view.snapshot, cut, chained)
+  }
 }
 
 const names = (stamps: readonly AgentJournalConnectorDelivery[]) => (row: Unfilled) =>
@@ -317,23 +324,4 @@ export function rowVerdict(
   return (submission?.submittedAt ?? 0) < startedAt
     ? { outcome: 'interrupted', failure: UNCONFIRMED }
     : { outcome: 'unattributed' }
-}
-
-/** A row held for an empty turn's retry that never ran (refused, or the app quit first), whose
- *  turn finished: answered only by any words that turn wrote before its last tool. */
-function heldAnswer(
-  row: Unfilled,
-  view: Awaited<ReturnType<typeof readReplyEvidence>>
-): ReplyRecoveryVerdict | null {
-  if (!row.emptyRetried || !row.cut || view.cutTurnVerdict(row.cut.turnId) !== 'success') {
-    return null
-  }
-  const { outcome, prose } = connectorReplyTurnOutcome({
-    outcome: 'success',
-    prose: view.cutTurnWords(row.cut.turnId),
-    bot: true
-  })
-  return prose
-    ? { outcome, prose: capAnswer(prose, JOURNAL_CONNECTOR_REPLY_PROSE_BYTES) }
-    : { outcome }
 }

@@ -192,7 +192,8 @@ export const storedMessageBody = messageBody.extend({
     .object({
       cutTurnId: z.string(),
       cutKind: z.enum(['restart', 'usage_limit']),
-      origin: z.array(storedConnectorDelivery)
+      origin: z.array(storedConnectorDelivery),
+      carried: z.array(z.string()).optional()
     })
     .optional(),
   tookOver: z

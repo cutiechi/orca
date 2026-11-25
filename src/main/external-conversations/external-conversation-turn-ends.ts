@@ -19,6 +19,7 @@ import type { ConnectorWorkLink } from '../../shared/connector-work-link-contrac
 import { connectorReplyWords } from '../../shared/agent-session/journal/journal-connector-reply-turn'
 import { isSlackDirectMessage } from '../../shared/connectors/slack-direct-message'
 import type { TurnLeave } from './external-conversation-thread-leaves'
+import { claimCarried } from './external-conversation-whole-answer'
 export type { SlackMirrorTurn } from './slack-mirror'
 
 export type ChatTurnEnd = {
@@ -151,6 +152,7 @@ export async function endRepliedTurn(
     turnItemId: turn.turnItemId,
     stamps: turn.stamps,
     ...(turn.opener ? { openerItemId: turn.opener.itemId } : {}),
+    ...claimCarried(turn.opener),
     outcome: end.news.outcome,
     prose: (link.bot ? turn.turnBotProse : turn.turnProse) ?? '',
     ...(link.bot && turn.turnProse ? { earlierProse: turn.turnProse } : {}),
